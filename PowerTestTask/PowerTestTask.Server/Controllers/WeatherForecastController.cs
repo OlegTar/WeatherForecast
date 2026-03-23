@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using PowerTestTask.Server.Configuration;
 using PowerTestTask.Server.Dto;
 using System.Text.Json;
+using System.Linq;
 
 namespace PowerTestTask.Server.Controllers;
 
@@ -49,22 +50,29 @@ public class WeatherForecastController : ControllerBase
 
         using var client = _httpClientFactory.CreateClient("forecast");
 
-        var response = await client.GetAsync($"?key={_forecastSettings.Key}&q={coordinates.Latitude},{coordinates.Longitude}&days=3").ConfigureAwait(false);
+        var response = await client.GetAsync($"?key={_forecastSettings.Key}&q={coordinates.Latitude},{coordinates.Longitude}&days=2").ConfigureAwait(false);
         var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         var current = JsonSerializer.Deserialize<WeatherApiDto>(content);
+        var days = current.Forecast.ForecastDay.ToArray();
+        var todayHours = days[0].Hours.ToList();
+
+        var currentHour = DateTime.Now.Hour;
+        var index = todayHours.FindIndex(hour => hour.Hour.EndsWith($"{currentHour}:00"));
+
+        var tomorrowHours = days[1].Hours.ToList();
 
         HourForecastDto result = new()
         {
-            Today = current.Forecast.ForecastDay.First().Hours.Select(h => new HourDto
+            Today = [.. todayHours.Skip(index).Select(h => new HourDto
             {
                 Hour = h.Hour,
                 Temperature = h.TemperatureC,
-            }).ToArray(),
-            Tomorrow = current.Forecast.ForecastDay.First().Hours.Select(h => new HourDto
+            })],
+            Tomorrow = [.. tomorrowHours.Select(h => new HourDto
             {
                 Hour = h.Hour,
                 Temperature = h.TemperatureC,
-            }).ToArray()
+            })]
         };
         return result;
     }
@@ -82,9 +90,9 @@ public class WeatherForecastController : ControllerBase
 
         DaysForecastsDto result = new()
         {
-            TomorrowTemperature = days[1].Day.AvgTemperature,
-            DayAfterTomorrowTemperature = days[2].Day.AvgTemperature,
-            TwoDaysAfterTomorrowTemperature = days[3].Day.AvgTemperature,
+            TomorrowTemperature = days.Length >= 2 ? days[1].Day.AvgTemperature : null,
+            DayAfterTomorrowTemperature = days.Length >= 3 ? days[2].Day.AvgTemperature : null,
+            TwoDaysAfterTomorrowTemperature = days.Length >= 4 ? days[3].Day.AvgTemperature : null,
         };
         return result;
     }

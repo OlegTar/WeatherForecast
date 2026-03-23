@@ -1,6 +1,8 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using PowerTestTask.Server.Configuration;
+using System.Net;
+using System.Net.Http.Headers;
 using Configuration = PowerTestTask.Server.Configuration.CityCoordinates;
 namespace PowerTestTask.Server;
 
@@ -44,7 +46,16 @@ public class Program
         builder.Services.AddHttpClient("forecast", httpClient =>
         {
             httpClient.BaseAddress = new Uri(forecastSettings.BaseUrl + forecastSettings.Forecast);
-            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+            //httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+            httpClient.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+            httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip, deflate");
+            //httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-GB");
+            //httpClient.DefaultRequestHeaders.TryAddWithoutValidation("cache-control", "no-cache");
+            //httpClient.DefaultRequestHeaders.Pragma.Add(NameValueHeaderValue.Parse("no-cache"));
+            //httpClient.DefaultRequestHeaders.TryAddWithoutValidation("upgrade-insecure-requests", "1");
+        }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+        {
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
         });
 
         // Add services to the container.
