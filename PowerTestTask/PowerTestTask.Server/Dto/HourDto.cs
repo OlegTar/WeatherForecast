@@ -2,6 +2,6 @@
 
 public class HourDto
 {
-    public int Hour { get; set; }
-    public decimal HourName { get; set; }
+    public string Hour { get; set; }
+    public decimal Temperature { get; set; }
 }

@@ -29,8 +29,11 @@ public class Program
 
         ForecastSettings forecastSettings = new ForecastSettings();
         builder.Configuration.Bind("Forecast", forecastSettings);
-        builder.Services.Configure<ForecastSettings>(forecastSettingsDi => {
+        builder.Services.Configure<ForecastSettings>(forecastSettingsDi =>
+        {
             forecastSettingsDi.Key = forecastSettings.Key;
+            forecastSettingsDi.Current = forecastSettings.Current;
+            forecastSettingsDi.Forecast = forecastSettings.Forecast;
         });
 
         builder.Services.AddHttpClient("current", httpClient =>
@@ -41,6 +44,7 @@ public class Program
         builder.Services.AddHttpClient("forecast", httpClient =>
         {
             httpClient.BaseAddress = new Uri(forecastSettings.BaseUrl + forecastSettings.Forecast);
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
         });
 
         // Add services to the container.
