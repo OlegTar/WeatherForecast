@@ -1,0 +1,1 @@
+D:\code\PowerTestTask\powertesttask.client\obj\Debug\powertesttask.client.esproj.CoreCompileInputs.cache

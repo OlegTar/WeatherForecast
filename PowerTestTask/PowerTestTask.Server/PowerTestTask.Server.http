@@ -1,0 +1,6 @@
+@PowerTestTask.Server_HostAddress = http://localhost:5014
+
+GET {{PowerTestTask.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
