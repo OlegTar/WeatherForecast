@@ -1,9 +1,5 @@
-
-using Microsoft.Extensions.DependencyInjection;
 using PowerTestTask.Server.Configuration;
 using System.Net;
-using System.Net.Http.Headers;
-using Configuration = PowerTestTask.Server.Configuration.CityCoordinates;
 namespace PowerTestTask.Server;
 
 public class Program
@@ -26,7 +22,6 @@ public class Program
                 conf.Cities[city.Key] = new Coordinates();
                 city.Bind(conf.Cities[city.Key]);
             }
-            Console.WriteLine(conf);
         });
 
         ForecastSettings forecastSettings = new ForecastSettings();
@@ -41,6 +36,7 @@ public class Program
         builder.Services.AddHttpClient("current", httpClient =>
         {
             httpClient.BaseAddress = new Uri(forecastSettings.BaseUrl + forecastSettings.Current);
+            httpClient.Timeout = TimeSpan.FromSeconds(5);
         });
 
         builder.Services.AddHttpClient("forecast", httpClient =>
@@ -48,6 +44,7 @@ public class Program
             httpClient.BaseAddress = new Uri(forecastSettings.BaseUrl + forecastSettings.Forecast);
             httpClient.DefaultRequestHeaders.Accept.ParseAdd("application/json");
             httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip, deflate");
+            httpClient.Timeout = TimeSpan.FromSeconds(5);
         }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
@@ -63,7 +60,7 @@ public class Program
         {
             options.AddPolicy("frontend", options =>
             {
-                options.AllowAnyMethod().AllowAnyHeader().WithOrigins("https://localhost:52800");
+                options.AllowAnyMethod().AllowAnyHeader().WithOrigins("https://localhost:52800", "https://localhost:52799");
             });
         });
 

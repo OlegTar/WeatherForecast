@@ -3,7 +3,7 @@ export interface Hours {
     tomorrow: Hour[];
 }
 
-interface Hour {
+export interface Hour {
     hour: string;
     temperature: number;
 }

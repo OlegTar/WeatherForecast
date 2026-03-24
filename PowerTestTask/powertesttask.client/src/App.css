@@ -9,3 +9,9 @@ th, td {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+
+.hours {
+    overflow-y: scroll;
+    height: 500px;
+    margin-top: 20px;
+}
