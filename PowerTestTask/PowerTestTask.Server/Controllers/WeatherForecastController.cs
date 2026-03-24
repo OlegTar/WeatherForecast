@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using PowerTestTask.Server.Configuration;
 using PowerTestTask.Server.Dto;
 using System.Text.Json;
-using System.Linq;
 
 namespace PowerTestTask.Server.Controllers;
 
