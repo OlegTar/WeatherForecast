@@ -1,6 +1,7 @@
 using DataLayer;
 using DataLayer.Configuration;
 using PowerTestTask.Server.Configuration;
+using PowerTestTask.Server.Middlewares;
 using System.Net;
 namespace PowerTestTask.Server;
 
@@ -66,8 +67,11 @@ public class Program
                 options.AllowAnyMethod().AllowAnyHeader().WithOrigins("https://localhost:52800", "https://localhost:52799");
             });
         });
+        builder.Services.AddSingleton<ExceptionMiddleware>();
 
         var app = builder.Build();
+
+        app.UseException();
 
         app.UseCors("frontend");
 

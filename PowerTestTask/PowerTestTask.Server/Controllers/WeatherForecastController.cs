@@ -21,7 +21,8 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("current")]
     public async Task<CurrentDto> Current([FromQuery] string city = "Moscow")
     {
-        var current = await _weatherService.GetCurrent(city);
+        _logger.LogInformation("current");
+        var current = await _weatherService.GetCurrent(city);        
 
         CurrentDto result = new()
         {
@@ -33,7 +34,8 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("forecast/hours")]
     public async Task<HourForecastDto> ForecastHours([FromQuery] string city = "Moscow")
     {
-        var forecast = await _weatherService.GetForecast(city);
+        _logger.LogInformation("forecast/hours");
+        var forecast = await _weatherService.GetForecast(city);        
         var days = forecast.Forecast.ForecastDay.ToArray();
         var todayHours = days[0].Hours.ToList();
 
@@ -61,7 +63,8 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("forecast/days")]
     public async Task<DaysForecastsDto> ForecastDays([FromQuery] string city = "Moscow")
     {
-        var forecast = await _weatherService.GetForecast(city);
+        _logger.LogInformation("forecast/days");
+        var forecast = await _weatherService.GetForecast(city);        
         var days = forecast.Forecast.ForecastDay.ToArray();
 
         DaysForecastsDto result = new()
