@@ -46,13 +46,8 @@ public class Program
         builder.Services.AddHttpClient("forecast", httpClient =>
         {
             httpClient.BaseAddress = new Uri(forecastSettings.BaseUrl + forecastSettings.Forecast);
-            //httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
             httpClient.DefaultRequestHeaders.Accept.ParseAdd("application/json");
             httpClient.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip, deflate");
-            //httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-GB");
-            //httpClient.DefaultRequestHeaders.TryAddWithoutValidation("cache-control", "no-cache");
-            //httpClient.DefaultRequestHeaders.Pragma.Add(NameValueHeaderValue.Parse("no-cache"));
-            //httpClient.DefaultRequestHeaders.TryAddWithoutValidation("upgrade-insecure-requests", "1");
         }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
@@ -64,8 +59,17 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddCors((options) =>
+        {
+            options.AddPolicy("frontend", options =>
+            {
+                options.AllowAnyMethod().AllowAnyHeader().WithOrigins("https://localhost:52800");
+            });
+        });
 
         var app = builder.Build();
+
+        app.UseCors("frontend");
 
         app.UseDefaultFiles();
         app.UseStaticFiles();
