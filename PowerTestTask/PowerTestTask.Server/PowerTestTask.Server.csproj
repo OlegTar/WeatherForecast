@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
     <ProjectReference Include="..\powertesttask.client\powertesttask.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

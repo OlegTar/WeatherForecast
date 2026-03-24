@@ -1,3 +1,5 @@
+using DataLayer;
+using DataLayer.Configuration;
 using PowerTestTask.Server.Configuration;
 using System.Net;
 namespace PowerTestTask.Server;
@@ -49,6 +51,7 @@ public class Program
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
         });
+        builder.Services.AddScoped<IWeatherService, WeatherService>();
 
         // Add services to the container.
 
